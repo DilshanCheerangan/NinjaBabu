@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ninja Babu</title>
+    <meta
+      name="description"
+      content="Camera-based Fruit Ninja style game using fingertip tracking."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <section id="heroTab" class="hero-tab">
+      <div class="hero-tab-inner">
+        <p class="hero-tab-kicker">Interactive prank arcade</p>
+        <h1 class="split-title" aria-label="Ninja Babu">
+          <span class="split-word">Ninja</span>
+          <span class="split-word">Babu</span>
+        </h1>
+        <p>Step into the arena. Slice fast, dodge chaos, and expect a twist.</p>
+        <button id="startBtn" type="button">Start Game</button>
+      </div>
+    </section>
+
+    <div class="app">
+      <main class="stage-shell">
+        <canvas id="gameCanvas"></canvas>
+        <div class="stage-tint" aria-hidden="true"></div>
+        <div class="arena-decor" aria-hidden="true">
+          <span class="lantern l1"></span>
+          <span class="lantern l2"></span>
+          <span class="lantern l3"></span>
+        </div>
+
+        <header class="game-hud">
+          <div class="score-board">
+            <span class="score-label">SCORE</span>
+            <span id="score" class="score-value">0</span>
+            <span class="best">BEST MODE</span>
+          </div>
+          <div class="hud-right">
+            <div class="life-pips" id="lifePips" aria-label="Lives left">
+              <span class="pip active"></span>
+              <span class="pip active"></span>
+              <span class="pip active"></span>
+            </div>
+            <div class="bomb-pill">Bombs: <span id="bombHits">0</span></div>
+          </div>
+        </header>
+
+        <div id="comboText" class="combo-text"></div>
+        <div id="prankOverlay" class="prank-overlay hidden" aria-live="polite">
+          <div class="prank-card">
+            <p id="prankMessage" class="prank-message"></p>
+            <button id="prankBtn" class="prank-btn hidden" type="button">Next</button>
+          </div>
+        </div>
+
+        <div class="overlay hidden" id="startOverlay">
+          <h2>Ninja Babu Arena</h2>
+          <p>
+            Use your mouse to slash fruits and avoid bombs. Fast movement gives cleaner cuts.
+          </p>
+          <p id="statusText">Status: Waiting to start.</p>
+          <button id="playAgainBtn" type="button">Play Again</button>
+          <div class="instruction-row">
+            <span>Fast mouse swipe = slice</span>
+            <span>Fruit = +10</span>
+            <span>Bomb = -1 life</span>
+          </div>
+        </div>
+      </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
