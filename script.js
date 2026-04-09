@@ -5,7 +5,6 @@ const heroTab = document.getElementById("heroTab");
 const startOverlay = document.getElementById("startOverlay");
 const startBtn = document.getElementById("startBtn");
 const playAgainBtn = document.getElementById("playAgainBtn");
-const statusText = document.getElementById("statusText");
 const scoreEl = document.getElementById("score");
 const bombHitsEl = document.getElementById("bombHits");
 const comboTextEl = document.getElementById("comboText");
@@ -37,6 +36,7 @@ let slowMoUntil = 0;
 let shakeUntil = 0;
 let shakeStrength = 0;
 const fingerTrail = [];
+const trailMaxLength = 22;
 const objects = [];
 const particles = [];
 const splits = [];
@@ -79,7 +79,7 @@ function resizeCanvas() {
 }
 
 function setStatus(text) {
-  statusText.textContent = `Status: ${text}`;
+  // Status text removed for cleaner HUD
 }
 
 function updateLivesUI() {
@@ -137,6 +137,12 @@ function movePrankButtonRandomly() {
   const maxY = Math.max(0, cardRect.height - btnRect.height - 30);
   prankBtnEl.style.left = `${Math.floor(rand(0, maxX))}px`;
   prankBtnEl.style.top = `${Math.floor(rand(0, maxY))}px`;
+}
+const playArea = document.getElementById("play");
+const navLinks = document.querySelectorAll(".nav-link");
+
+function rand(min, max) {
+  return Math.random() * (max - min) + min;
 }
 
 async function runPrankSequence() {
@@ -337,24 +343,40 @@ function drawTrail() {
   if (fingerTrail.length < 2) {
     return;
   }
-  for (let i = 1; i < fingerTrail.length - 1; i += 1) {
-    const a = fingerTrail[i - 1];
-    const b = fingerTrail[i];
-    const c = fingerTrail[i + 1];
+  
+  ctx.lineJoin = "round";
+  ctx.lineCap = "round";
+
+  for (let i = 1; i < fingerTrail.length; i++) {
+    const p1 = fingerTrail[i - 1];
+    const p2 = fingerTrail[i];
     const alpha = i / fingerTrail.length;
-    ctx.strokeStyle = `rgba(132, 241, 255, ${0.15 + alpha * 0.8})`;
-    ctx.lineWidth = 2.5 + alpha * 9;
-    ctx.lineCap = "round";
+    
+    // Outer glow
     ctx.beginPath();
-    ctx.moveTo(a.x, a.y);
-    ctx.quadraticCurveTo(b.x, b.y, (b.x + c.x) / 2, (b.y + c.y) / 2);
+    ctx.strokeStyle = `rgba(132, 241, 255, ${alpha * 0.3})`;
+    ctx.lineWidth = 14 * alpha;
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+
+    // Inner core
+    ctx.beginPath();
+    ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.9})`;
+    ctx.lineWidth = 4 * alpha;
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
     ctx.stroke();
   }
+
   const tip = fingerTrail[fingerTrail.length - 1];
-  ctx.fillStyle = "#b4ffff";
+  ctx.fillStyle = "#fff";
+  ctx.shadowBlur = 15;
+  ctx.shadowColor = "#84f1ff";
   ctx.beginPath();
-  ctx.arc(tip.x, tip.y, 9, 0, Math.PI * 2);
+  ctx.arc(tip.x, tip.y, 4, 0, Math.PI * 2);
   ctx.fill();
+  ctx.shadowBlur = 0;
 }
 
 function drawParticles(dt) {
@@ -535,11 +557,13 @@ function drawGame(dt) {
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
-  for (const o of objects) {
-    if (o.isBomb) {
-      drawBomb(o);
-    } else {
-      drawFruit(o);
+  if (!prankRunning) {
+    for (const o of objects) {
+      if (o.isBomb) {
+        drawBomb(o);
+      } else {
+        drawFruit(o);
+      }
     }
   }
 
@@ -556,11 +580,11 @@ function drawGame(dt) {
     ctx.fillText("SLOW MOTION!", canvas.clientWidth / 2 - 72, 42);
   }
 
-  ctx.fillStyle = "rgba(242,223,170,0.8)";
-  ctx.font = "600 15px Inter";
-  ctx.fillText("Mouse mode active", 24, 34);
+  /* Status text removed */
   ctx.restore();
 }
+
+// Slice to start logic removed to favor standard clicking as requested
 
 function loop(ts) {
   if (!lastTime) {
@@ -573,12 +597,12 @@ function loop(ts) {
     if (!smoothFingerPoint || !handDetected) {
       smoothFingerPoint = { x: pointerPoint.x, y: pointerPoint.y };
     } else {
-      const mouseSmoothing = 0.45;
-      smoothFingerPoint.x += (pointerPoint.x - smoothFingerPoint.x) * mouseSmoothing;
-      smoothFingerPoint.y += (pointerPoint.y - smoothFingerPoint.y) * mouseSmoothing;
+      const smoothing = 0.65; // Snappier response
+      smoothFingerPoint.x += (pointerPoint.x - smoothFingerPoint.x) * smoothing;
+      smoothFingerPoint.y += (pointerPoint.y - smoothFingerPoint.y) * smoothing;
     }
     fingerTrail.push({ x: smoothFingerPoint.x, y: smoothFingerPoint.y });
-    if (fingerTrail.length > 18) {
+    if (fingerTrail.length > trailMaxLength) {
       fingerTrail.shift();
     }
   } else if (!handDetected && fingerTrail.length > 0) {
@@ -586,18 +610,75 @@ function loop(ts) {
   }
 
   updateGame(dt);
+  if (!running) {
+    updateMagicText();
+  }
   drawGame(dt);
   requestAnimationFrame(loop);
 }
+
+function initMagicText() {
+  const container = document.getElementById("magicTextContainer");
+  if (!container) return;
+
+  const paragraphs = container.querySelectorAll(".about-description");
+  paragraphs.forEach((p) => {
+    const text = p.textContent.trim();
+    const words = text.split(/\s+/);
+    p.innerHTML = "";
+    
+    words.forEach((word) => {
+      const span = document.createElement("span");
+      span.className = "magic-word";
+      
+      const base = document.createElement("span");
+      base.className = "magic-word-base";
+      base.textContent = word + " ";
+      
+      const fill = document.createElement("span");
+      fill.className = "magic-word-fill";
+      fill.textContent = word + " ";
+      
+      span.appendChild(base);
+      span.appendChild(fill);
+      p.appendChild(span);
+    });
+  });
+}
+
+function updateMagicText() {
+  const container = document.getElementById("magicTextContainer");
+  if (!container || running) return;
+
+  const fills = container.querySelectorAll(".magic-word-fill");
+  const rect = container.getBoundingClientRect();
+  const windowHeight = window.innerHeight;
+  
+  // Animation starts when card is 85% from top, finishes at 30%
+  const start = windowHeight * 0.85;
+  const end = windowHeight * 0.3;
+  const progress = Math.min(1, Math.max(0, (start - rect.top) / (start - end)));
+  
+  fills.forEach((fill, i) => {
+    const wordStart = i / fills.length;
+    const wordEnd = (i + 1.5) / fills.length; // Slight overlap for smoothness
+    
+    let opacity = 0;
+    if (progress > wordStart) {
+      opacity = Math.min(1, (progress - wordStart) / (wordEnd - wordStart));
+    }
+    fill.style.opacity = opacity;
+  });
+}
+
+/* Title split logic removed */
+function updateSplitText(hoverIndex) {}
+function initSplitText() {}
 
 function pushCursorPoint(ev) {
   const rect = canvas.getBoundingClientRect();
   const x = ev.clientX - rect.left;
   const y = ev.clientY - rect.top;
-  if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
-    pointerActive = false;
-    return;
-  }
   pointerPoint = { x, y };
   pointerActive = true;
 }
@@ -630,24 +711,33 @@ async function startGame() {
   updateLivesUI();
   spawnTimer = 200;
   running = true;
+  playArea.classList.add("active");
+  resizeCanvas(); // Ensure canvas has correct size after showing
   startOverlay.classList.add("hidden");
   setStatus("Mouse active. Slice fruits, avoid bombs.");
 }
 
 startBtn.addEventListener("click", async () => {
+  console.log("Start button clicked!");
+  if (startBtn.disabled) return;
   startBtn.disabled = true;
-  setStatus("Initializing game...");
   try {
     await startGame();
     heroTab.classList.add("hidden");
     startOverlay.classList.add("hidden");
   } catch (err) {
-    setStatus("Game failed to start. Refresh and try again.");
-    startOverlay.classList.add("hidden");
-    heroTab.classList.remove("hidden");
-  } finally {
+    console.error("Game start error:", err);
     startBtn.disabled = false;
   }
+});
+
+navLinks.forEach(link => {
+  link.addEventListener("click", (e) => {
+    if (link.getAttribute("href") === "#play") {
+      e.preventDefault();
+      startBtn.click();
+    }
+  });
 });
 
 playAgainBtn.addEventListener("click", async () => {
@@ -661,31 +751,61 @@ playAgainBtn.addEventListener("click", async () => {
 });
 
 window.addEventListener("resize", resizeCanvas);
-canvas.addEventListener("mousemove", (ev) => {
+window.addEventListener("mousemove", (ev) => {
   pushCursorPoint(ev);
 });
-canvas.addEventListener("mouseenter", (ev) => {
-  pushCursorPoint(ev);
-});
-canvas.addEventListener("mouseleave", () => {
+window.addEventListener("mouseleave", () => {
   pointerActive = false;
 });
-canvas.addEventListener("touchstart", (ev) => {
+window.addEventListener("touchstart", (ev) => {
   const t = ev.touches[0];
   if (t) {
     pushCursorPoint(t);
   }
 }, { passive: true });
-canvas.addEventListener("touchmove", (ev) => {
+window.addEventListener("touchmove", (ev) => {
   const t = ev.touches[0];
   if (t) {
     pushCursorPoint(t);
   }
 }, { passive: true });
-canvas.addEventListener("touchend", () => {
+window.addEventListener("touchend", () => {
   pointerActive = false;
 });
+
+// Premium Scroll Spy & Mobile Touch Prevention
+window.addEventListener("scroll", () => {
+  const sections = document.querySelectorAll("section, .app");
+  const navLinks = document.querySelectorAll(".nav-link");
+  
+  let current = "heroTab";
+  sections.forEach((section) => {
+    const sectionTop = section.offsetTop;
+    if (pageYOffset >= sectionTop - 100) {
+      const id = section.getAttribute("id");
+      if (id) current = id;
+    }
+  });
+
+  navLinks.forEach((link) => {
+    link.classList.remove("active");
+    if (link.getAttribute("href").includes(current)) {
+      link.classList.add("active");
+    }
+  });
+});
+
+canvas.addEventListener("touchstart", (e) => {
+  if (running) e.preventDefault();
+}, { passive: false });
+
+canvas.addEventListener("touchmove", (e) => {
+  if (running) e.preventDefault();
+}, { passive: false });
+
 setupSprites();
 updateLivesUI();
 resizeCanvas();
+initMagicText();
+initSplitText();
 requestAnimationFrame(loop);
