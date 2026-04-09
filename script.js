@@ -178,11 +178,18 @@ async function runPrankSequence() {
   prankBtnEl.style.top = "0px";
 
   let dodges = 0;
-  const dodgeHandler = () => {
+  const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+  const dodgeHandler = (e) => {
+    // On mobile, we dodge on click. On desktop, we dodge on hover.
+    if (isTouch && e.type === 'mouseenter') return;
+    
     dodges += 1;
     movePrankButtonRandomly();
+    
     if (dodges >= 5) {
       prankBtnEl.removeEventListener("mouseenter", dodgeHandler);
+      prankBtnEl.removeEventListener("click", dodgeHandler);
       setPrankMessage(
         "Sorry, promise we will behave now.\nHere is your real button.\nHappy April Fools - be a legendary fool."
       );
@@ -197,7 +204,12 @@ async function runPrankSequence() {
       };
     }
   };
-  prankBtnEl.addEventListener("mouseenter", dodgeHandler);
+
+  if (isTouch) {
+    prankBtnEl.addEventListener("click", dodgeHandler);
+  } else {
+    prankBtnEl.addEventListener("mouseenter", dodgeHandler);
+  }
 }
 
 function rand(min, max) {

@@ -1117,6 +1117,7 @@ body {
   .prank-btn {
     padding: 0.62rem 1rem;
     font-size: 0.92rem;
+    transition: transform 150ms ease; /* Remove left/top transitions for instant jump */
   }
 }
 
