@@ -4,6 +4,7 @@
   "description": "Camera-based Fruit Ninja style game",
   "main": "script.js",
   "scripts": {
+    "build": "node build-static.js",
     "dev": "http-server . -p 8080",
     "start": "http-server . -p 8080"
   },

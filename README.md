@@ -56,6 +56,7 @@ This project is designed to showcase:
 - `index.html` - app structure, hero tab, game overlay UI
 - `styles.css` - full visual system, animations, responsive rules
 - `script.js` - gameplay loop, spawning, collisions, prank logic, effects
+- `build-static.js` / `vercel.json` - production build layout for static hosts (e.g. Vercel)
 - `public/background/back.png` - arena background image
 - `public/babu/` - placeholder folder for optional Babu image asset
 
@@ -90,6 +91,16 @@ http://localhost:5173
 - Prank sequence is intentionally **non-harmful** and clearly resolved.
 - No real file operations or system actions are performed.
 - The "hack" message is fictional and part of the narrative prank setup.
+
+---
+
+## Deploy (Vercel)
+
+This repo keeps `index.html` at the **project root** (not inside `public/`). If the Vercel project **Output Directory** is set to `public`, only asset folders deploy and the site root has **no** `index.html`, which shows as **404**.
+
+This project includes `vercel.json` plus `npm run build`, which copies root HTML/CSS/JS and `public/` into `dist/`. Vercel should use **Output Directory: `dist`** from that config after you redeploy.
+
+If anything still fails, open **Project → Settings → General** and confirm **Root Directory** is the repo root, **Framework Preset** is Other (or auto with our `vercel.json`), and **Build Command / Output Directory** are not overriding `dist` incorrectly.
 
 ---
 
