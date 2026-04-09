@@ -594,10 +594,11 @@ function loop(ts) {
   lastTime = ts;
 
   if (pointerActive && pointerPoint) {
-    if (!smoothFingerPoint || !handDetected) {
+    if (!smoothFingerPoint) {
       smoothFingerPoint = { x: pointerPoint.x, y: pointerPoint.y };
     } else {
-      const smoothing = 0.65; // Snappier response
+      const isTouch = 'ontouchstart' in window;
+      const smoothing = isTouch ? 0.35 : 0.45; // Enhanced smoothing for mobile
       smoothFingerPoint.x += (pointerPoint.x - smoothFingerPoint.x) * smoothing;
       smoothFingerPoint.y += (pointerPoint.y - smoothFingerPoint.y) * smoothing;
     }
@@ -766,9 +767,10 @@ window.addEventListener("touchstart", (ev) => {
 window.addEventListener("touchmove", (ev) => {
   const t = ev.touches[0];
   if (t) {
+    if (running) ev.preventDefault(); // Prevent scrolling while playing
     pushCursorPoint(t);
   }
-}, { passive: true });
+}, { passive: false });
 window.addEventListener("touchend", () => {
   pointerActive = false;
 });

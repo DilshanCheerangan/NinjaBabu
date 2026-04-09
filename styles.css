@@ -854,7 +854,9 @@ body {
   }
 
   .stage-shell {
-    min-height: 400px;
+    min-height: 350px;
+    height: auto;
+    width: 95%;
   }
 
   .hero-tab {
@@ -1073,18 +1075,23 @@ body {
   }
 }
 
-@media (orientation: portrait) and (max-width: 900px) {
-  .app {
-    min-height: 100svh;
-    align-content: start;
-  }
-
+@media (orientation: portrait) {
   .stage-shell {
-    width: 100%;
-    aspect-ratio: auto;
-    height: clamp(58svh, 64svh, 74svh);
-    min-height: 58svh;
-    max-height: 74svh;
+    aspect-ratio: 9 / 12; /* Taller arena for portrait mobile */
+    min-height: 0;
+    height: 60vh;
+    width: 90vw;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-nav {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .about-card {
+    padding: 2rem 1.5rem;
   }
 }
 
