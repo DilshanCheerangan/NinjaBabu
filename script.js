@@ -775,15 +775,17 @@ window.addEventListener("touchend", () => {
   pointerActive = false;
 });
 
-// Premium Scroll Spy & Mobile Touch Prevention
-window.addEventListener("scroll", () => {
+function updateScrollSpy() {
   const sections = document.querySelectorAll("section, .app");
   const navLinks = document.querySelectorAll(".nav-link");
   
   let current = "heroTab";
   sections.forEach((section) => {
+    // Only consider sections that are actually visible (not display: none)
+    if (section.offsetHeight === 0) return;
+    
     const sectionTop = section.offsetTop;
-    if (pageYOffset >= sectionTop - 100) {
+    if (window.pageYOffset >= sectionTop - 150) {
       const id = section.getAttribute("id");
       if (id) current = id;
     }
@@ -791,11 +793,15 @@ window.addEventListener("scroll", () => {
 
   navLinks.forEach((link) => {
     link.classList.remove("active");
-    if (link.getAttribute("href").includes(current)) {
+    const href = link.getAttribute("href");
+    if (href && href.includes(current)) {
       link.classList.add("active");
     }
   });
-});
+}
+
+// Premium Scroll Spy & Mobile Touch Prevention
+window.addEventListener("scroll", updateScrollSpy);
 
 canvas.addEventListener("touchstart", (e) => {
   if (running) e.preventDefault();
@@ -810,4 +816,5 @@ updateLivesUI();
 resizeCanvas();
 initMagicText();
 initSplitText();
+updateScrollSpy(); // Initialize scroll spy state
 requestAnimationFrame(loop);

@@ -37,7 +37,7 @@ body {
   display: flex;
   flex-direction: column;
   padding: 2rem;
-  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url("./public/herosection/ChatGPT Image Apr 7, 2026, 09_38_56 PM.png");
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("./public/herosection/ChatGPT Image Apr 7, 2026, 09_38_56 PM.png");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -130,14 +130,38 @@ body {
   justify-content: flex-start;
   align-items: center;
   text-align: center;
-  padding-top: calc(25vh + 200px); /* Lowered by an additional 100px (200px total now) */
+  padding-top: calc(20vh + 40px);
+  /* Lifted by another 10px */
   padding-bottom: 10vh;
 }
 
-.hero-actions {
-  margin-top: 2rem;
-  position: relative;
+.hero-mascot-container {
+  margin-bottom: -100px;
+  /* Final 5px adjustment for mascot placement */
   z-index: 200;
+  /* Higher z-index than button to ensure feet are visible on top */
+  position: relative;
+  pointer-events: none; /* Crucial: allows hover and clicks to reach the button below */
+}
+
+.hero-mascot {
+  width: min(280px, 60vw);
+  height: auto;
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.5));
+  /* Subtler shadow for grounded feel */
+  user-select: none;
+  pointer-events: none;
+  position: relative;
+  z-index: 300;
+}
+
+/* Floating animation removed */
+
+.hero-actions {
+  margin-top: 0;
+  position: relative;
+  z-index: 100;
+  /* Lower than mascot to let feet overlap the top edge */
 }
 
 /* Hero title styles removed */
@@ -260,7 +284,8 @@ body {
 .app {
   width: min(1200px, calc(100% - 2rem));
   margin: 0 auto;
-  display: none; /* Hidden by default, shown when playing */
+  display: none;
+  /* Hidden by default, shown when playing */
   gap: 1.5rem;
   min-height: 100vh;
   align-items: center;
@@ -284,7 +309,8 @@ body {
 .stage-shell {
   position: relative;
   width: 100%;
-  max-width: 1200px; /* Restored original max-width */
+  max-width: 1200px;
+  /* Restored original max-width */
   margin: 0 auto;
   border-radius: 24px;
   overflow: hidden;
@@ -294,21 +320,21 @@ body {
   box-shadow:
     0 26px 45px rgba(0, 0, 0, 0.5),
     inset 0 0 0 2px rgba(255, 192, 93, 0.3);
-  background-color: #3d1f0d; /* Deep Brown Arena */
-  background-image: 
-    repeating-linear-gradient(
-      90deg,
+  background-color: #3d1f0d;
+  /* Deep Brown Arena */
+  background-image:
+    repeating-linear-gradient(90deg,
       rgba(0, 0, 0, 0.05) 0px,
       rgba(0, 0, 0, 0.05) 1px,
       transparent 1px,
-      transparent 80px
-    ),
-    linear-gradient(to bottom, #4a2612, #2d1608); /* Wood texture effect */
+      transparent 80px),
+    linear-gradient(to bottom, #4a2612, #2d1608);
+  /* Wood texture effect */
   background-size: 80px 100%, 100% 100%;
   border: 8px solid #5f3118;
-  box-shadow: 
-    inset 0 0 100px rgba(0,0,0,0.5),
-    0 20px 50px rgba(0,0,0,0.8);
+  box-shadow:
+    inset 0 0 100px rgba(0, 0, 0, 0.5),
+    0 20px 50px rgba(0, 0, 0, 0.8);
   animation: stageBreath 8s ease-in-out infinite;
 }
 
@@ -562,7 +588,8 @@ body {
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.05); /* Slightly less transparent */
+  background: rgba(255, 255, 255, 0.05);
+  /* Slightly less transparent */
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 3.5rem;
@@ -588,7 +615,8 @@ body {
 
 #playAgainBtn {
   margin: 2rem auto 0;
-  border: 4px solid #ffca62; /* Added a solid border for better visibility without glow */
+  border: 4px solid #ffca62;
+  /* Added a solid border for better visibility without glow */
   border-radius: 999px;
   padding: 1rem 3rem;
   font-family: inherit;
@@ -606,7 +634,8 @@ body {
 }
 
 #playAgainBtn::after {
-  display: none; /* Removed the shine/glow effect */
+  display: none;
+  /* Removed the shine/glow effect */
 }
 
 #statusText {
@@ -644,10 +673,12 @@ body {
     opacity: 0;
     transform: translateY(14px) scale(0.82);
   }
+
   25% {
     opacity: 1;
     transform: translateY(0) scale(1.08);
   }
+
   100% {
     opacity: 0;
     transform: translateY(-15px) scale(0.96);
@@ -655,32 +686,38 @@ body {
 }
 
 @keyframes orbFloat {
+
   0%,
   100% {
     transform: translateY(0) scale(1);
   }
+
   50% {
     transform: translateY(-8px) scale(1.06);
   }
 }
 
 @keyframes textGlow {
+
   0%,
   100% {
     text-shadow: 0 4px 0 rgba(46, 18, 7, 0.55), 0 0 6px rgba(255, 203, 128, 0.08);
   }
+
   50% {
     text-shadow: 0 4px 0 rgba(46, 18, 7, 0.55), 0 0 16px rgba(255, 203, 128, 0.28);
   }
 }
 
 @keyframes stageBreath {
+
   0%,
   100% {
     box-shadow:
       0 26px 45px rgba(0, 0, 0, 0.5),
       inset 0 0 0 2px rgba(255, 192, 93, 0.3);
   }
+
   50% {
     box-shadow:
       0 28px 48px rgba(0, 0, 0, 0.55),
@@ -689,20 +726,24 @@ body {
 }
 
 @keyframes hudFloat {
+
   0%,
   100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-2px);
   }
 }
 
 @keyframes pillPulse {
+
   0%,
   100% {
     box-shadow: 0 0 0 rgba(255, 194, 101, 0);
   }
+
   50% {
     box-shadow: 0 0 18px rgba(255, 194, 101, 0.2);
   }
@@ -713,6 +754,7 @@ body {
     opacity: 0;
     transform: translateY(8px) scale(0.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -725,6 +767,7 @@ body {
     transform: translateY(54px) rotateX(70deg) scale(0.88);
     filter: blur(8px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) rotateX(0deg) scale(1);
@@ -737,6 +780,7 @@ body {
     opacity: 0;
     transform: translateY(26px) scale(0.95) rotateX(10deg);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) scale(1) rotateX(0deg);
@@ -747,18 +791,21 @@ body {
   from {
     background-position: 0 0, 0 0, 0 0;
   }
+
   to {
     background-position: -140px 80px, 110px -100px, -100px -70px;
   }
 }
 
 @keyframes playAgainPulse {
+
   0%,
   100% {
     box-shadow:
       0 10px 22px rgba(255, 153, 52, 0.35),
       0 0 0 rgba(255, 210, 125, 0);
   }
+
   50% {
     box-shadow:
       0 12px 26px rgba(255, 171, 73, 0.42),
@@ -770,6 +817,7 @@ body {
   0% {
     transform: translateX(-130%);
   }
+
   45%,
   100% {
     transform: translateX(130%);
@@ -798,8 +846,8 @@ body {
 }
 
 .star-button:hover {
-  background: transparent;
-  color: #fec195;
+  background: #fec195; /* Kept solid background as requested */
+  color: #181818; /* Kept text dark for contrast */
   box-shadow: 0 0 35px #fec1958c;
   transform: translateY(-4px);
 }
@@ -825,23 +873,82 @@ body {
   filter: drop-shadow(0 0 15px #fec195);
 }
 
-.star-1 { top: 20%; left: 20%; width: 28px; height: 28px; }
-.star-button:hover .star-1 { top: -90%; left: -35%; }
+.star-1 {
+  top: 20%;
+  left: 20%;
+  width: 28px;
+  height: 28px;
+}
 
-.star-2 { top: 45%; left: 45%; width: 18px; height: 18px; transition-delay: 0.05s; }
-.star-button:hover .star-2 { top: -35%; left: 15%; }
+.star-button:hover .star-1 {
+  top: -90%;
+  left: -35%;
+}
 
-.star-3 { top: 40%; left: 40%; width: 10px; height: 10px; transition-delay: 0.1s; }
-.star-button:hover .star-3 { top: 75%; left: -25%; }
+.star-2 {
+  top: 45%;
+  left: 45%;
+  width: 18px;
+  height: 18px;
+  transition-delay: 0.05s;
+}
 
-.star-4 { top: 20%; left: 40%; width: 14px; height: 14px; transition-delay: 0.08s; }
-.star-button:hover .star-4 { top: 45%; left: 120%; }
+.star-button:hover .star-2 {
+  top: -35%;
+  left: 15%;
+}
 
-.star-5 { top: 25%; left: 45%; width: 20px; height: 20px; transition-delay: 0.12s; }
-.star-button:hover .star-5 { top: -45%; left: 100%; }
+.star-3 {
+  top: 40%;
+  left: 40%;
+  width: 10px;
+  height: 10px;
+  transition-delay: 0.1s;
+}
 
-.star-6 { top: 10%; left: 50%; width: 12px; height: 12px; transition-delay: 0.03s; }
-.star-button:hover .star-6 { top: 115%; left: 80%; }
+.star-button:hover .star-3 {
+  top: 75%;
+  left: -25%;
+}
+
+.star-4 {
+  top: 20%;
+  left: 40%;
+  width: 14px;
+  height: 14px;
+  transition-delay: 0.08s;
+}
+
+.star-button:hover .star-4 {
+  top: 45%;
+  left: 120%;
+}
+
+.star-5 {
+  top: 25%;
+  left: 45%;
+  width: 20px;
+  height: 20px;
+  transition-delay: 0.12s;
+}
+
+.star-button:hover .star-5 {
+  top: -45%;
+  left: 100%;
+}
+
+.star-6 {
+  top: 10%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  transition-delay: 0.03s;
+}
+
+.star-button:hover .star-6 {
+  top: 115%;
+  left: 80%;
+}
 
 .s-svg svg {
   width: 100%;
@@ -1077,7 +1184,8 @@ body {
 
 @media (orientation: portrait) {
   .stage-shell {
-    aspect-ratio: 9 / 12; /* Taller arena for portrait mobile */
+    aspect-ratio: 9 / 12;
+    /* Taller arena for portrait mobile */
     min-height: 0;
     height: 60vh;
     width: 90vw;
@@ -1089,7 +1197,7 @@ body {
     flex-direction: column;
     gap: 1.5rem;
   }
-  
+
   .about-card {
     padding: 2rem 1.5rem;
   }
