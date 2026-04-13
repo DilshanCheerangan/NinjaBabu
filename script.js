@@ -165,7 +165,17 @@ async function runPrankSequence() {
   setPrankMessage(
     "Wait... thought that was it?\nNo chance.\nWe hacked your computer and renamed the FIRST folder in your Documents to Ninja Babu."
   );
+  
+  const winAlertEl = document.getElementById("winAlert");
+  if (winAlertEl) {
+    winAlertEl.classList.remove("hidden");
+  }
+
   await waitForPrankButton("Okay...");
+  
+  if (winAlertEl) {
+    winAlertEl.classList.add("hidden");
+  }
 
   setPrankMessage(
     "Relax.\nCute Ninja Babu is too stylish to hack anything.\nBut yes, we absolutely got you there."
@@ -829,4 +839,20 @@ resizeCanvas();
 initMagicText();
 initSplitText();
 updateScrollSpy(); // Initialize scroll spy state
+
+const winAlertElTopLevel = document.getElementById("winAlert");
+const closeWinAlert = document.getElementById("closeWinAlert");
+const winCheckBtn = document.getElementById("winCheckBtn");
+
+if (closeWinAlert) {
+  closeWinAlert.addEventListener("click", () => {
+    if (winAlertElTopLevel) winAlertElTopLevel.classList.add("hidden");
+  });
+}
+if (winCheckBtn) {
+  winCheckBtn.addEventListener("click", () => {
+    if (winAlertElTopLevel) winAlertElTopLevel.classList.add("hidden");
+  });
+}
+
 requestAnimationFrame(loop);
